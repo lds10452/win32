@@ -7,11 +7,10 @@ HANDLE g_hOutput = 0;//接收标准输出句柄
 void OnCreate(HWND hWnd, LPARAM lParam) {
 	CREATESTRUCT* pcs = (CREATESTRUCT*)lParam;
 	char* pszText = (char*)pcs->lpCreateParams;
-	MessageBox(NULL, pszText, "Infor", MB_OK);
+	MessageBox(NULL, pszText, "Infor", MB_OK);//显示CreateWindowEx函数最后一个参数的值
+	CreateWindowEx(0, "EDIT", "hello", WS_CHILD | WS_VISIBLE | WS_BORDER, 0, 0, 200, 200, hWnd, NULL, 0, NULL);//创建子窗口
 
-	SendMessage(hWnd, WM_MYMESSAGE, 1, 2);
-
-	CreateWindowEx(0, "EDIT", "hello", WS_CHILD | WS_VISIBLE | WS_BORDER, 0, 0, 200, 200, hWnd, NULL, 0, NULL);
+	SendMessage(hWnd, WM_MYMESSAGE, 1, 2);//发送用户自定义消息
 }
 void OnSize(HWND hWnd, LPARAM lParam) {
 	short nWidth = LOWORD(lParam);
@@ -25,7 +24,7 @@ void OnMyMessage(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	sprintf(szText, "自定义消息被处理: wParam=%d,lParam=%d\n", wParam, lParam);
 	MessageBox(hWnd, szText, "Infor", MB_OK);
 }
-//窗口处理函数( 自定义，处理消息)
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
 	case WM_MYMESSAGE:
@@ -56,7 +55,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	}
 	return DefWindowProc(hWnd, msgID, wParam, lParam);
 }
-//入口函数
+
 int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCmdShow) {
 	AllocConsole();//增加DOS用于输出内容到终端
 	g_hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -99,7 +98,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 		}
 		else {
 			//空闲处理
-			WriteConsole(g_hOutput, "OnIdle", strlen("OnIdle"), NULL, NULL);
+			//WriteConsole(g_hOutput, "OnIdle", strlen("OnIdle"), NULL, NULL);
 		}
 	}
 	return 0;
