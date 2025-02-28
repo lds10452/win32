@@ -22,13 +22,13 @@ void OnCommand(HWND hWnd, WPARAM wParam) {
 void OnContextMenu(HWND hWnd, LPARAM lParam) {
 	HMENU hMain = LoadMenu(g_hInstance, (CHAR*)IDR_MENU1);
 	HMENU hPopup = GetSubMenu(hMain, 0);
-	TrackPopupMenu(hPopup, TPM_LEFTALIGN | TPM_TOPALIGN,
+	TrackPopupMenu(hPopup, TPM_LEFTALIGN | TPM_TOPALIGN,//弹出上下文菜单
 		LOWORD(lParam), HIWORD(lParam), 0, hWnd, NULL);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
-	case WM_CONTEXTMENU:
+	case WM_CONTEXTMENU://在WM_RBUTTONUP消息之后产生。右键点击弹出
 		OnContextMenu(hWnd, lParam);
 		break;
 	case WM_COMMAND:
