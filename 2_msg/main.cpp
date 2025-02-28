@@ -4,6 +4,22 @@ HANDLE g_hOutput = 0;//接收标准输出句柄
 
 #define WM_MYMESSAGE WM_USER+1001
 
+
+void OnKeyDown(HWND hWnd, WPARAM wParam) {
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_KEYDOWN: 键码值=%d\n", wParam);
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
+void OnKeyUp(HWND hWnd, WPARAM wParam) {
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_KEYUP: 键码值=%d\n", wParam);
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
+void OnChar(HWND hWnd, WPARAM wParam) {
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_CHAR: wParam=%d\n", wParam);
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
 void OnPaint(HWND hWnd) {
 	const char* pszText = "WM_PAINT\n";
 	WriteConsole(g_hOutput, pszText, strlen(pszText), NULL, NULL);
@@ -38,6 +54,15 @@ void OnMyMessage(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
+	case WM_CHAR://这个消息必定在按键按下之后产生，可见字符才会产生，大小写的值不同，TranslateMessage中发出的消息
+		OnChar(hWnd, wParam);
+		break;
+	case WM_KEYDOWN:
+		OnKeyDown(hWnd, wParam);
+		break;
+	case WM_KEYUP:
+		OnKeyUp(hWnd, wParam);
+		break;
 	case WM_PAINT://1、ShowWindow发送的非队列消息。2、当窗口需要绘制的时候，由GetMessage产生的队列消息。
 		OnPaint(hWnd);
 		break;

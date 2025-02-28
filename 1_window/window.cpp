@@ -58,7 +58,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	//消息循环
 	MSG nMsg = { 0 };
 	while (GetMessage(&nMsg, NULL, 0, 0)) {//无消息时会阻塞
-		TranslateMessage(&nMsg);//检查消息是否是按键的消息，如果不是按键消息，不做任何处理，继续执行。
+		TranslateMessage(&nMsg);//检查消息是否是按键的消息，如果不是按键消息，不做任何处理，继续执行。对于可见字符被按下时的大小写区分
 		DispatchMessage(&nMsg);//将消息交给窗口处理函数来处理。
 	}
 	return 0;
