@@ -4,13 +4,24 @@ HANDLE g_hOutput = 0;//接收标准输出句柄
 
 #define WM_MYMESSAGE WM_USER+1001
 
+void OnPaint(HWND hWnd) {
+	const char* pszText = "WM_PAINT\n";
+	WriteConsole(g_hOutput, pszText, strlen(pszText), NULL, NULL);
+
+	PAINTSTRUCT ps = { 0 };
+	HDC hdc = BeginPaint(hWnd, &ps);
+	TextOut(hdc, 300, 300, "hello", 5);
+	EndPaint(hWnd, &ps);
+	//以上绘制图的代码，必须放在处理WM_PAINT消息时调用。
+}
 void OnCreate(HWND hWnd, LPARAM lParam) {
 	CREATESTRUCT* pcs = (CREATESTRUCT*)lParam;
 	char* pszText = (char*)pcs->lpCreateParams;
 	MessageBox(NULL, pszText, "Infor", MB_OK);//显示CreateWindowEx函数最后一个参数的值
+
 	CreateWindowEx(0, "EDIT", "hello", WS_CHILD | WS_VISIBLE | WS_BORDER, 0, 0, 200, 200, hWnd, NULL, 0, NULL);//创建子窗口
 
-	SendMessage(hWnd, WM_MYMESSAGE, 1, 2);//发送用户自定义消息
+	SendMessage(hWnd, WM_MYMESSAGE, 1, 2);//发送用户自定义消息，该消息不进入消息队列，会直接调用窗口处理函数处理，直到处理完成再返回
 }
 void OnSize(HWND hWnd, LPARAM lParam) {
 	short nWidth = LOWORD(lParam);
@@ -27,13 +38,19 @@ void OnMyMessage(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
-	case WM_MYMESSAGE:
+	case WM_PAINT://1、ShowWindow发送的非队列消息。2、当窗口需要绘制的时候，由GetMessage产生的队列消息。
+		OnPaint(hWnd);
+		break;
+	case WM_LBUTTONDOWN:
+		InvalidateRect(hWnd, NULL, TRUE);//测试WM_PAINT消息
+		break;
+	case WM_MYMESSAGE://用户自定义消息
 		OnMyMessage(hWnd, wParam, lParam);
 		break;
 	case WM_SIZE:
 		OnSize(hWnd, lParam);
 		break;
-	case WM_CREATE:
+	case WM_CREATE://窗口创建后，未显示之前产生，非队列消息
 		OnCreate(hWnd, lParam);
 		break;
 	case WM_DESTROY:
@@ -41,7 +58,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 		PostMessage(hWnd, WM_QUIT, 0, 0);
 		//		SendMessage( hWnd, WM_QUIT, 0, 0);
 		break;
-	case WM_SYSCOMMAND:
+	case WM_SYSCOMMAND://窗口右上角放大缩小关闭按钮产生
 		if (wParam == SC_CLOSE) {
 			int nRet = MessageBox(hWnd, "是否退出", "Infor", MB_YESNO);
 			if (nRet == IDYES) {
@@ -81,7 +98,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	UpdateWindow(hWnd);
 	//消息循环
 	MSG nMsg = { 0 };
-	/*	while( GetMessage(&nMsg,NULL,0,0) ){
+	/*	while( GetMessage(&nMsg,NULL,0,0) ){//时常阻塞，效率低
 			TranslateMessage( &nMsg );
 			DispatchMessage( &nMsg );//将消息交给窗口处理函数来处理。
 		}*/
