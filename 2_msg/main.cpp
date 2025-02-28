@@ -4,7 +4,55 @@ HANDLE g_hOutput = 0;//接收标准输出句柄
 
 #define WM_MYMESSAGE WM_USER+1001
 
+void OnTimer(HWND hWnd, WPARAM wParam) {
+/*	switch( wParam ){
+	case 1:
+		//.....
+		break;
+	case 2:
+		//....
+		break;
+	}*/
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_TIMER: 定时器ID=%d\n", wParam);
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
 
+	static unsigned short count = 0;
+	if (count > 3)
+	{
+		KillTimer(hWnd, 1);//关闭定时器
+		KillTimer(hWnd, 2);
+	}
+	count++;
+}
+void OnLButtonDown(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_LBUTTONDOWN: 其他按键状态:%d, X=%d,Y=%d\n",
+		wParam, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
+void OnLButtonUp(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_LBUTTONUP: 其他按键状态:%d, X=%d,Y=%d\n",
+		wParam, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
+void OnMouseMove(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_MOUSEMOVE: 其他按键状态:%d, X=%d,Y=%d\n",
+		wParam, LOWORD(lParam), HIWORD(lParam));
+	//	WriteConsole( g_hOutput, szText, strlen(szText), NULL, NULL );
+}
+void OnLButtonDblClk(HWND hWnd) {
+	const char* szText = "WM_LBUTTONDBLCLK\n";
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
+void OnMouseWheel(HWND hWnd, WPARAM wParam) {
+	short nDelta = HIWORD(wParam);//偏移量
+	char szText[256] = { 0 };
+	sprintf(szText, "WM_MOUSEWHEEL:nDetal=%d\n", nDelta);
+	WriteConsole(g_hOutput, szText, strlen(szText), NULL, NULL);
+}
 void OnKeyDown(HWND hWnd, WPARAM wParam) {
 	char szText[256] = { 0 };
 	sprintf(szText, "WM_KEYDOWN: 键码值=%d\n", wParam);
@@ -54,6 +102,25 @@ void OnMyMessage(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
+	case WM_TIMER://由GetMessage产生发送的队列消息。
+		OnTimer(hWnd, wParam);
+		break;
+	case WM_MOUSEWHEEL:
+		OnMouseWheel(hWnd, wParam);
+		break;
+	case WM_LBUTTONDBLCLK:
+		OnLButtonDblClk(hWnd);
+		break;
+	case WM_MOUSEMOVE:
+		OnMouseMove(hWnd, wParam, lParam);
+		break;
+	case WM_LBUTTONDOWN:
+		OnLButtonDown(hWnd, wParam, lParam);
+		InvalidateRect(hWnd, NULL, TRUE);//测试WM_PAINT消息
+		break;
+	case WM_LBUTTONUP:
+		OnLButtonUp(hWnd, wParam, lParam);
+		break;
 	case WM_CHAR://这个消息必定在按键按下之后产生，可见字符才会产生，大小写的值不同，TranslateMessage中发出的消息
 		OnChar(hWnd, wParam);
 		break;
@@ -63,11 +130,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	case WM_KEYUP:
 		OnKeyUp(hWnd, wParam);
 		break;
-	case WM_PAINT://1、ShowWindow发送的非队列消息。2、当窗口需要绘制的时候，由GetMessage产生的队列消息。
+	case WM_PAINT://1、ShowWindow发送的非队列消息。2、当窗口需要绘制的时候，由GetMessage产生发送的队列消息。
 		OnPaint(hWnd);
-		break;
-	case WM_LBUTTONDOWN:
-		InvalidateRect(hWnd, NULL, TRUE);//测试WM_PAINT消息
 		break;
 	case WM_MYMESSAGE://用户自定义消息
 		OnMyMessage(hWnd, wParam, lParam);
@@ -77,6 +141,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 		break;
 	case WM_CREATE://窗口创建后，未显示之前产生，非队列消息
 		OnCreate(hWnd, lParam);
+
+		SetTimer(hWnd, 1, 1000, NULL);//创建并启动定时器，单位ms
+		SetTimer(hWnd, 2, 2000, NULL);
 		break;
 	case WM_DESTROY:
 		//		PostQuitMessage( 0 );//可以使GetMessage函数返回0
@@ -112,7 +179,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	wc.lpfnWndProc = WndProc;
 	wc.lpszClassName = "Main";/****************************/
 	wc.lpszMenuName = NULL;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	RegisterClass(&wc);//将以上所有赋值全部写入操作系统。
 	//在内存创建窗口
 	const char* pszText = "hello data";
