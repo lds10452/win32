@@ -11,7 +11,12 @@ void OnCreate(HWND hWnd) {
 void OnCommand(HWND hWnd, WPARAM wParam) {
 	switch (LOWORD(wParam)) {
 	case ID_NEW:
-		MessageBox(hWnd, "新建被点击", "Infor", MB_OK);
+	{
+		if (HIWORD(wParam) == 0)
+			MessageBox(hWnd, "新建菜单项被点击", "Infor", MB_OK);
+		else if (HIWORD(wParam) == 1)
+			MessageBox(hWnd, "CTRL+M被点击", "Infor", MB_OK);
+	}
 		break;
 	case ID_EXIT:
 		MessageBox(hWnd, "退出被点击", "Infor", MB_OK);
@@ -74,17 +79,21 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 		
 //	HMENU hMenu = LoadMenu(g_hInstance, (char*)IDR_MENU1);//添加菜单方式二
 	char strText[256] = { 0 };
-	LoadString(hIns, IDS_WND, strText, 256);
+	LoadString(hIns, IDS_WND, strText, 256);//添加字符串资源，可用于翻译，表中标题改一下，其他保持不变即可
 	HWND hWnd = CreateWindowEx(0, "Main", strText, WS_OVERLAPPEDWINDOW,
 		100, 100, 500, 500, NULL, NULL/*hMenu*/, hIns, NULL);
 	
 	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
 	
+	HACCEL hAccel = LoadAccelerators(hIns, (char*)IDR_ACCELERATOR1);
 	MSG nMsg = { 0 };
 	while (GetMessage(&nMsg, NULL, 0, 0)) {
-		TranslateMessage(&nMsg);
-		DispatchMessage(&nMsg);
+		if (!TranslateAccelerator(hWnd, hAccel, &nMsg))//如果在表中找到快捷键，内部会SendMessage发送WM_COMMAND消息，从而执行点击菜单项同样的功能
+		{
+			TranslateMessage(&nMsg);
+			DispatchMessage(&nMsg);
+		}
 	}
 	return 0;
 }

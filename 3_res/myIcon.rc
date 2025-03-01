@@ -67,12 +67,24 @@ IDC_CURSOR2             CURSOR                  "cursor2.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Accelerator
+//
+
+IDR_ACCELERATOR1 ACCELERATORS
+BEGIN
+    "M",            ID_NEW,                 VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_SET,                 VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
 STRINGTABLE
 BEGIN
-    IDS_WND                 "窗口"
+    IDS_WND                 "我的窗口"
 END
 
 #endif    // 中文(简体，中国) resources
