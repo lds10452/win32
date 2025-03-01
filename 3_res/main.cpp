@@ -33,10 +33,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	case WM_SETCURSOR:
 	{
 		HCURSOR hCursor = LoadCursor(g_hInstance, (char*)IDC_CURSOR2);
-		if (LOWORD(lParam) == HTCAPTION)
+		if (LOWORD(lParam) == HTCAPTION)//标题栏使用这个光标
 		{
 			SetCursor(hCursor);//加载光标资源方式二
-			return 0;
+			return 0;//必须返回，否则会被默认处理函数覆盖导致使用默认光标
 		}
 	}
 		break;
@@ -73,7 +73,9 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	RegisterClass(&wc);
 		
 //	HMENU hMenu = LoadMenu(g_hInstance, (char*)IDR_MENU1);//添加菜单方式二
-	HWND hWnd = CreateWindowEx(0, "Main", "window", WS_OVERLAPPEDWINDOW,
+	char strText[256] = { 0 };
+	LoadString(hIns, IDS_WND, strText, 256);
+	HWND hWnd = CreateWindowEx(0, "Main", strText, WS_OVERLAPPEDWINDOW,
 		100, 100, 500, 500, NULL, NULL/*hMenu*/, hIns, NULL);
 	
 	ShowWindow(hWnd, SW_SHOW);

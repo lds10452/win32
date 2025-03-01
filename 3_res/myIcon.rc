@@ -64,6 +64,17 @@ IDC_CURSOR1             CURSOR                  "cursor1.cur"
 
 IDC_CURSOR2             CURSOR                  "cursor2.cur"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_WND                 "窗口"
+END
+
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
