@@ -1,5 +1,7 @@
 #include <windows.h>
 #include "resource.h"
+#include "resource1.h"
+
 HINSTANCE g_hInstance = 0;
 
 void OnCreate(HWND hWnd) {
@@ -52,7 +54,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	wc.cbWndExtra = 0;
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.hCursor = NULL;
-	wc.hIcon = NULL;
+	wc.hIcon = LoadIcon(hIns, (char*)IDI_ICON1);//加载图标资源
 	wc.hInstance = hIns;/***********************************/
 	wc.lpfnWndProc = WndProc;
 	wc.lpszClassName = "Main";/****************************/
