@@ -30,6 +30,16 @@ void OnContextMenu(HWND hWnd, LPARAM lParam) {
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
+	case WM_SETCURSOR:
+	{
+		HCURSOR hCursor = LoadCursor(g_hInstance, (char*)IDC_CURSOR2);
+		if (LOWORD(lParam) == HTCAPTION)
+		{
+			SetCursor(hCursor);//加载光标资源方式二
+			return 0;
+		}
+	}
+		break;
 	case WM_CONTEXTMENU://在WM_RBUTTONUP消息之后产生。右键点击弹出
 		OnContextMenu(hWnd, lParam);
 		break;
@@ -53,7 +63,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wc.hCursor = NULL;
+	wc.hCursor = LoadCursor(hIns,(char*)IDC_CURSOR1);//加载光标资源方式一，在默认处理函数中会自动设置，只作用于客户区
 	wc.hIcon = LoadIcon(hIns, (char*)IDI_ICON1);//加载图标资源
 	wc.hInstance = hIns;/***********************************/
 	wc.lpfnWndProc = WndProc;
