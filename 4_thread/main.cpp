@@ -3,6 +3,7 @@
 int main() {
 //	base();
 //	inter();
-	mutex();
+//	mutex();
+	event();
 	return 0;
 }
