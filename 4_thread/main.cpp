@@ -4,6 +4,7 @@ int main() {
 //	base();
 //	inter();
 //	mutex();
-	event();
+//	event();
+	sema();
 	return 0;
 }

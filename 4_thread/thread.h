@@ -6,3 +6,4 @@ void base();
 void inter();
 void mutex();
 void event();
+void sema();
