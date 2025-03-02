@@ -2,6 +2,7 @@
 
 int main() {
 //	base();
-	inter();
+//	inter();
+	mutex();
 	return 0;
 }
