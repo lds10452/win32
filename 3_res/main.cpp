@@ -86,7 +86,7 @@ int CALLBACK WinMain(HINSTANCE hIns, HINSTANCE hPreIns, LPSTR lpCmdLine, int nCm
 	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
 	
-	HACCEL hAccel = LoadAccelerators(hIns, (char*)IDR_ACCELERATOR1);
+	HACCEL hAccel = LoadAccelerators(hIns, (char*)IDR_ACCELERATOR1);//添加加速键资源
 	MSG nMsg = { 0 };
 	while (GetMessage(&nMsg, NULL, 0, 0)) {
 		if (!TranslateAccelerator(hWnd, hAccel, &nMsg))//如果在表中找到快捷键，内部会SendMessage发送WM_COMMAND消息，从而执行点击菜单项同样的功能

@@ -3,7 +3,7 @@
 HANDLE g_hSema = 0;//信号量句柄
 DWORD CALLBACK TestProc(LPVOID pParam) {
 	while (1) {
-		WaitForSingleObject(g_hSema, INFINITE);//没通过一次，计数值减一
+		WaitForSingleObject(g_hSema, INFINITE);//每通过一次，计数值减一，减到0阻塞
 		printf("*********\n");
 	}
 }

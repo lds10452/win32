@@ -1,10 +1,10 @@
 #include "thread.h"
 
 int main() {
-//	base();
+	base();
 //	inter();
 //	mutex();
 //	event();
-	sema();
+//	sema();
 	return 0;
 }
