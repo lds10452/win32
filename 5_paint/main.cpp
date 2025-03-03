@@ -25,14 +25,14 @@ void DrawEll( HDC hdc ){
 void DrawBmp( HDC hdc ){
 	//添加位图资源（不需要代码）
 	HBITMAP hBmp = LoadBitmap( g_hInstance, (CHAR*)IDB_BITMAP1);
-	HDC hMemdc = CreateCompatibleDC( hdc );
 	//创建一个内存DC，并构建一个虚拟区域，并且内存DC在虚拟区域中绘图
-	HGDIOBJ nOldBmp = SelectObject( hMemdc, hBmp);
+	HDC hMemdc = CreateCompatibleDC( hdc );
 	//将位图数据送给内存DC，内存DC在虚拟区域中将位图绘制出来。
-	BitBlt( hdc, 100 ,100, 48, 48, hMemdc, 0, 0, SRCCOPY );
+	HGDIOBJ nOldBmp = SelectObject( hMemdc, hBmp);
 	//将虚拟区域中绘制好的图像成像到窗口中
-	StretchBlt( hdc, 200,200, 96, 96, hMemdc, 0, 0, 48, 48, SRCCOPY );
+	BitBlt( hdc, 100 ,100, 48, 48, hMemdc, 0, 0, SRCCOPY );
 	//缩放成像
+	StretchBlt( hdc, 200,200, 96, 96, hMemdc, 0, 0, 48, 48, SRCCOPY );
 	SelectObject( hMemdc, nOldBmp );
 	DeleteObject( hBmp );
 	DeleteDC( hMemdc );
