@@ -37,10 +37,8 @@ void DrawBmp( HDC hdc ){
 	DeleteObject( hBmp );
 	DeleteDC( hMemdc );
 }
-void OnPaint( HWND hWnd ){
-	PAINTSTRUCT ps = { 0 };
-	HDC hdc = BeginPaint( hWnd, &ps );
-
+void DrawBase(HDC hdc)
+{
 	HPEN hPen = CreatePen( PS_DASH, 1, RGB(255,0,0));//PS_SOLID，默认黑色实线笔
 	HGDIOBJ nOldPen = SelectObject( hdc, hPen );//需要返回默认笔，后面替换回去用于删除自己创建的笔
 	
@@ -60,6 +58,35 @@ void OnPaint( HWND hWnd ){
 
 	SelectObject( hdc, nOldPen );
 	DeleteObject( hPen );
+}
+void DrawMyText(HDC hdc)
+{
+	SetTextColor(hdc, RGB(255, 0, 0));
+	SetBkColor(hdc, RGB(0, 255, 0));//只适用于OPAQUE模式
+	SetBkMode(hdc, TRANSPARENT);
+	HFONT hFont = CreateFont(30, 0, 45, 0, 900, 1, 1, 1, GB2312_CHARSET, 0, 0, 0, 0, "黑体");
+	HGDIOBJ nOldFont = SelectObject(hdc, hFont);
+	char szText[] = "hello txt";
+	TextOut(hdc, 100, 100, szText, strlen(szText));
+
+	RECT rc;
+	rc.left = 100;
+	rc.top = 150;
+	rc.right = 200;
+	rc.bottom = 200;
+	//	Rectangle( hdc, 100, 150, 200, 200);
+	DrawText(hdc, szText, strlen(szText), &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP);
+	//DT_VCENTER / DT_BOTTOM 只适用于 DT_SINGLELINE, 和 DT_WORDBREAK(多行）冲突
+
+	SelectObject(hdc, nOldFont);
+	DeleteObject(hFont);
+}
+void OnPaint( HWND hWnd ){
+	PAINTSTRUCT ps = { 0 };
+	HDC hdc = BeginPaint( hWnd, &ps );
+
+//	DrawBase(hdc);//绘制基础图形、位图
+	DrawMyText(hdc);//绘制文本
 
 	EndPaint( hWnd, &ps );
 }
