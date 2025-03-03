@@ -12,7 +12,7 @@ DWORD CALLBACK PrintProc(LPVOID pParam) {
 DWORD CALLBACK CtrlProc(LPVOID pParam) {
 	while (1) {
 		Sleep(1000);
-		SetEvent(g_hEvent);//设置事件
+		SetEvent(g_hEvent);//设置事件为有信号状态
 	}
 	return 0;
 }
