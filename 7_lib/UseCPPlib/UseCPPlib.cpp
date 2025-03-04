@@ -6,14 +6,17 @@ int CPPlib_sub(int sub1, int sub2);
 //给链接器看的
 #pragma comment( lib, "../Debug/CPPlib.lib") //?CPPlib_add@@YAHHH@Z / ?CPPlib_sub@@YAHHH@Z
 
-extern "C" int Clib_add(int add1, int add2);
+extern "C" int Clib_add(int add1, int add2);//告诉编译器按c的方式编译函数
 extern "C" int Clib_sub(int sub1, int sub2);
 #pragma comment( lib, "../Debug/Clib.lib") //Clib_add  /  Clib_sub
+
 int main(){
+	//c++调c++库
 	int sum = CPPlib_add(5,4);//?CPPlib_add@@YAHHH@Z
 	int sub= CPPlib_sub(5,4);//?CPPlib_sub@@YAHHH@Z
 	cout << "sum=" << sum << ",sub=" << sub << endl;
 
+	//c++调c库
 	sum = Clib_add(5,3); //Clib_add
 	sub = Clib_sub(5,3);  //Clib_sub
 	cout << "sum=" << sum << ",sub=" << sub << endl;
