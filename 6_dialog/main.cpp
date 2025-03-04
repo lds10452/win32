@@ -1,10 +1,11 @@
 #include <windows.h>
 #include "resource.h"
+
 HINSTANCE g_hInstance = 0;
-INT CALLBACK DlgProc(HWND hwndlg, UINT msgID, WPARAM wParam, LPARAM lParam) {
+INT CALLBACK ModelDlgProc(HWND hwndlg, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	switch (msgID) {
 	case WM_INITDIALOG://对话框创建之后，显示之前的消息，不进入WM_CREATE消息
-		MessageBox(hwndlg, "WM_INITDIALOG", "Infor", MB_OK);
+		MessageBox(hwndlg, "model WM_INITDIALOG", "Infor", MB_OK);
 		break;
 	case WM_CREATE:
 		MessageBox(hwndlg, "WM_CREATE", "Infor", MB_OK);
@@ -18,13 +19,38 @@ INT CALLBACK DlgProc(HWND hwndlg, UINT msgID, WPARAM wParam, LPARAM lParam) {
 	}
 	return FALSE;//将消息交给真正的对话框窗口处理函数的后续代码帮我们处理
 }
+
+INT CALLBACK NoModelDlgProc(HWND hwndlg, UINT msgID, WPARAM wParam, LPARAM lParam) {
+	switch (msgID) {
+	case WM_INITDIALOG://对话框创建之后，显示之前的消息，不进入WM_CREATE消息
+		MessageBox(hwndlg, "WM_INITDIALOG", "Infor", MB_OK);
+		break;
+	case WM_CREATE:
+		MessageBox(hwndlg, "WM_CREATE", "Infor", MB_OK);
+		break;
+	case WM_SYSCOMMAND:
+		if (wParam == SC_CLOSE) {
+//			EndDialog(hwndlg, 100);//销毁模式对话框，函数DialogBox返回值为100
+			DestroyWindow( hwndlg );//销毁非模式对话框
+		}
+		break;
+	}
+	return FALSE;//将消息交给真正的对话框窗口处理函数的后续代码帮我们处理
+}
+
 void OnCommand(HWND hWnd, WPARAM wParam) {
 	switch (LOWORD(wParam)) {
-	case ID_MODEL://菜单项id
+	case ID_MODEL://菜单项id，模态对话框
 	{
-		int nRet = DialogBox(g_hInstance, (char*)IDD_DIALOG1, hWnd, (DLGPROC)DlgProc);
+		int nRet = DialogBox(g_hInstance, (char*)IDD_DIALOG1, hWnd, (DLGPROC)ModelDlgProc);
 		if (nRet == 100)//EndDialog函数第二个参数值
 			MessageBox(hWnd, "successful", "Infor", MB_OK);
+	}
+	break;
+	case ID_NOMODEL://菜单项id
+	{
+		HWND wnd= CreateDialog(g_hInstance, (char*)IDD_DIALOG1, hWnd, (DLGPROC)NoModelDlgProc);
+		ShowWindow(wnd, SW_SHOW);
 	}
 	break;
 	}

@@ -55,6 +55,7 @@ BEGIN
     POPUP "对话框"
     BEGIN
         MENUITEM "模态对话框",                       ID_MODEL
+        MENUITEM "非模态对话框",                      ID_NOMODEL
     END
 END
 
